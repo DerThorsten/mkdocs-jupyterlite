@@ -121,13 +121,23 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
                 
                 kernel_name = lite_env_config.kernel_mapping[extenstion]
                 item_name = item.stem
+                # remove extension
+                item_name = item_name.split(".")[0]
 
                 # read the file
                 with open(item, 'r') as f:
                     content = f.read()
                     # append new line to content
                     content = content + "\n"
-                    content = content + f"[run notebook](../lite/{lite_env_name}/lab/index.html?path={item_name}.ipynb&kernel={kernel_name})"
+
+                    n_parts = len(self._docs_path(lite_env_name).parts)
+                    # for each part we need to go up one level
+                    go_up = ""
+                    for i in range(n_parts):
+                        go_up = go_up + "../"
+
+
+                    content = content + f"[run notebook]({go_up}{lite_env_name}/lite/lab/index.html?path={item_name}.ipynb&kernel={kernel_name})"
                 
                 # write the file
                 with open(item, 'w') as f:  
