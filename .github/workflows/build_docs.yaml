@@ -8,13 +8,8 @@ jobs:
 
   build_docs:
     runs-on: ubuntu-latest
-    env:
-      TARGET_PLATFORM: emscripten-wasm32
-      GITHUB_OWNER: "emscripten-forge"
     strategy:
       fail-fast: false
-      matrix:
-        emsdk_ver: ["3.1.45"]
 
     steps:
       ################################################################
