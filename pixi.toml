@@ -1,0 +1,45 @@
+
+[project]
+name = "mkdocs-jupyterlite"
+version = "0.1.0"
+description = "The mkdocs-jupyterlite plugin"
+authors = ["DerThorsten <derthorstenbeier@gmail.com>"]
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-64"]
+
+
+############################################
+# documentation feature / tasks
+############################################
+[feature.feature_documentation]
+[feature.feature_documentation.dependencies]
+python = "3.11.*"
+mkdocs = ">=1.6.0"
+mkdocs-material = ">=9.5.23"
+pip = ">=24"
+appdirs = "*"
+jupyterlite = ">=0.3.0"
+jupyterlite-core = ">=0.3.0"
+micromamba = ">=1.5.8"
+jupytext = "*"
+jupyter_server = "*"
+#mamba = ">=1.5.8"
+jupyterlite-xeus = ">=0.1.8"
+
+[feature.feature_documentation.tasks.install_mkdocs_jupyterlite]
+cmd = ["pip", "install", "-e", ".", "--no-deps"]
+
+# [feature.feature_documentation.tasks.install_xeus_lite]
+# cmd = ["cd", "~/src/jupyterlite-xeus-loader"]#Q,"&&","pip", "install", "-e", "."]
+
+[feature.feature_documentation.tasks.mkdocs]
+cmd = ["mkdocs"]
+depends_on = ["install_mkdocs_jupyterlite"]
+
+
+############################################
+# environments
+############################################
+
+[environments]
+documentation-env = ["feature_documentation"]

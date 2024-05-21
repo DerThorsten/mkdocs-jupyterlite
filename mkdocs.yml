@@ -1,0 +1,65 @@
+site_name: mkdocs-jupyterlite
+theme:
+  name: material
+  features:
+    - navigation.instant
+  palette:
+
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
+      primary: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+      
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+
+plugins:
+  - search
+  - blog
+  - jupyterlite-plugin:
+      environments:
+        my_env:
+          build: 9
+          env_file: lite_envs/with_numpy/env.yaml
+          notebook_dir: notebooks
+          notebook_pattern: "*.py"
+          notebook_doc_path: "examples/notebooks"
+          kernel_mapping:
+            py: xpython
+          mounts:
+            - host: lite_envs/with_numpy/mounts/some_mount
+              target: "/some/target/dir"
+          
+
+
+
+
+
+
+
