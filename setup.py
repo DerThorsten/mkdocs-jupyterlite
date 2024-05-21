@@ -17,7 +17,7 @@ setup(
         'mkdocs>=1.0.4',
         'jupyterlite>=0.3.0',
         'jupyterlite-core>=0.3.0',
-        'jupyter_server",
+        'jupyter_server',
         "appdirs",
         "jupytext",
         'jupyterlite-xeus>=0.1.8',
