@@ -1,4 +1,4 @@
-# Quicksart
+# Quickstart
 
 ## Lite environment
 To use the JupyterLite plugin, you need to have a `*.yaml` file
@@ -13,9 +13,9 @@ dependencies:
   - xeus-python
   - numpy
 ```
-The usual `mkdocs.yml` needs should look needs to have the custom `pymdownx.superfences` with
-a custom superfence named `repl` that uses the `mkdocs_jupyterlite.superfences.repl_formater` formatter
-and the `jupyterlite-plugin` with the environments you want to use.
+The usual `mkdocs.yml` is needed. It needs `pymdownx.superfences` as an extension and `jupyterlite-plugin` as a plugin.
+
+```{.yaml title="mkdocs.yml"}
 
 ## Mkdocs configuration
 
