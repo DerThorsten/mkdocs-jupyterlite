@@ -5,11 +5,12 @@ from pathlib import Path
 import yaml
 import fnmatch
 import tempfile
-
+import json
 from mkdocs import utils as mkdocs_utils
 from mkdocs.config import config_options, Config
 from mkdocs.plugins import BasePlugin
 import mkdocs
+import urllib.parse
 
 from .lite import build_jupyterlite
 
@@ -26,6 +27,14 @@ import pprint
 import jupytext
 
 from .notebooks import convert_notebooks
+
+IFRAME_TEMPLATE = """
+<iframe src="{env}/lite/repl/index.html?kernel={kernel_name}&code={code}" width="100%" height="500px">
+</iframe>
+"""
+
+
+
 
 class MountConfig(Config):
     host = config_options.Dir(exists=True)  # required
@@ -185,4 +194,58 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
         
 
         return config
+
+    # def on_page_markdown(self, markdown,page, config, files):
+    #     # iterate line by line over the markdown
+    #     # if we find a line that starts with !!!!lite
+    #     # we know that we have to replace the content of the fenced block
+    #     lines = markdown.split("\n")
+    #     num_lines = len(lines)
+    #     START_WORD = "!!!!repl:"
+    #     current = 0 
+    #     replaced_lines = []
+    #     while current < num_lines:
+
+    #         current_line = lines[current]
+    #         if current_line.startswith("!!!!repl:"):
+
+    #             # remove the !!!!repl: from the line
+    #             json_opts_str = current_line[len(START_WORD):]
+    #             # parse the json string
+    #             json_opts = json.loads(json_opts_str)
+    #             print(f"json_opts: {json_opts}")
+
+
+    #             print(f"found start at {current}")
+    #             # we found a start of a fenced block
+    #             # find the end of the block
+    #             start = current
+    #             current = current + 1
+    #             while current < num_lines and not lines[current].startswith("!!!!"):
+    #                 current = current + 1
+    #             end = current
+
+    #             print(f" start: {start} end: {end}")
+
+    #             code_block = "\n".join(lines[start+1:end])
+    #             print(f" code block: {code_block}")
+
+    #             # code needs to be escaped
+    #             code_block = urllib.parse.quote_plus(code_block)
+
+    #             iframe_str = IFRAME_TEMPLATE.format(env=json_opts["env"], kernel_name=json_opts["kernel"], code=code_block)
+
+    #             print(f"iframe: {iframe_str}")
+    #             # replace the block with the iframe
+    #             replaced_lines.append(iframe_str)
+    #         else:
+    #             replaced_lines.append(current_line)
+                
+            
+    #         current = current + 1
+        
+    #     markdown = "\n".join(replaced_lines)
+
+    #     return markdown
+    
 

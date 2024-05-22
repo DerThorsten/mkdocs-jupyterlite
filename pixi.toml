@@ -23,8 +23,11 @@ jupyterlite-core = ">=0.3.0"
 micromamba = ">=1.5.8"
 jupytext = "*"
 jupyter_server = "*"
+lxml = "*"
 #mamba = ">=1.5.8"
 jupyterlite-xeus = ">=0.1.8"
+[feature.feature_documentation.pypi-dependencies]
+mkdocs_custom_fences = "*"
 
 [feature.feature_documentation.tasks.install_mkdocs_jupyterlite]
 cmd = ["pip", "install", "-e", ".", "--no-deps"]

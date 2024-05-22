@@ -36,12 +36,16 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: repl
+          class: iframe
+          format: !!python/name:mkdocs_jupyterlite.superfences.repl_formater
+    
 
 
 plugins:
   - search
-  - blog
   - jupyterlite-plugin:
       environments:
         my_env:

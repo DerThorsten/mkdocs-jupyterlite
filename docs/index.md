@@ -1,8 +1,15 @@
 # Introduction
 
+To include a repl in your markdown file, you can use the following syntax:
 
-Url  [lite/my_env/lab](my_env/lite/lab) 
+````{.md option="Repl"}
+```{.repl kernel="xpython" env="my_env"}
+print('hello world')
+```
+````
 
-Repl:
+This will render the following:
 
-<iframe src="my_env/lite/repl/index.html?kernel=xpython&code=print('hello world')" width="100%" height="500px"></iframe>
+```{.repl kernel="xpython" env="my_env"}
+print('hello world')
+```
