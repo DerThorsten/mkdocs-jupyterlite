@@ -114,11 +114,6 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
         lite_envs = self.config.get("environments")
         for lite_env_name, lite_env_config in lite_envs.items():
             
-            # copy jupterlite deployment to site_dir
-            lite_dir = self._env_lite_cache_dir(lite_env_name)
-            page_lite_dir = Path(config.get('site_dir')) /  lite_env_name / "lite"
-            shutil.copytree(lite_dir, page_lite_dir)
-
             nbdir = self._env_notebook_markdown_dir(lite_env_name)
           
             for item in  self._env_notebook_files[lite_env_name]:
@@ -205,6 +200,24 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
                               content_dir=self._env_notebook_ipynb_dir(lite_env_name))
         
 
+        return config
+    
+
+    def on_post_build(self, config):
+
+        for lite_env_name, lite_env_config in lite_envs.items():
+            env_cache_dir = self.cache_dir / lite_env_name
+            build_jupyterlite(config=config, lite_env_name=lite_env_name, 
+                              lite_env_config=lite_env_config,
+                              out_dir=env_cache_dir / "lite",
+                              content_dir=self._env_notebook_ipynb_dir(lite_env_name))
+
+            
+            # copy jupterlite deployment to site_dir
+            lite_dir = self._env_lite_cache_dir(lite_env_name)
+            page_lite_dir = Path(config.get('site_dir')) /  lite_env_name / "lite"
+            shutil.copytree(lite_dir, page_lite_dir)
+            
         return config
 
 

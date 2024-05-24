@@ -20,7 +20,7 @@ The `repl` directive supports the following options:
 | `kernel`  | The kernel to use for the repl.       |-|
 | `width`   | The width of the repl.                |`100%`|
 | `height`  | The height of the repl.               |`500px`|
-| `theme`   | The theme to use for the repl.        |`light`|
+| `theme`   | The theme to use for the repl.        |`JupyterLab Light`|
 | `toolbar` | Whether to show the toolbar.          |1|
 
 
