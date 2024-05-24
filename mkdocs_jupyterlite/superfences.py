@@ -18,12 +18,12 @@ def repl_formater(source, language, css_class, options, md, classes=None, id_val
 
     code_block=urllib.parse.quote_plus(source)
     repl_args = dict(
-        env=options.get("env", "my_env"),
-        kernel=options.get("kernel", "xpython"),
-        width=options.get("width", "100%"),
-        height=options.get("height", "'500px'"),
-        theme=options.get("theme", "light"),
-        toolbar=options.get("toolbar", "1"),
+        env=urllib.parse.quote_plus(options.get("env", "JupyterLab Light")),
+        kernel=urllib.parse.quote_plus(options.get("kernel", "xpython")),
+        width=urllib.parse.quote_plus(options.get("width", "100%")),
+        height=urllib.parse.quote_plus(options.get("height", "'500px'")),
+        theme=urllib.parse.quote_plus(options.get("theme", "light")),
+        toolbar=urllib.parse.quote_plus(options.get("toolbar", "1")),
         source=code_block
     )
 

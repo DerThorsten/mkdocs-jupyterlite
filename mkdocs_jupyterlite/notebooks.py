@@ -2,7 +2,6 @@ import fnmatch
 from pathlib import Path
 import jupytext
 
-from jupytext.header import recursive_update
 
 def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_markdown, outdir_ipynb):
     notebook_dir = Path(notebook_dir)
@@ -57,4 +56,4 @@ def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_mar
             ipynb = jupytext.writes(nb, fmt='ipynb')
             out_path = outdir_ipynb / notebook.with_suffix(".ipynb").name
             out_path.write_text(ipynb)
-
+    return notebooks

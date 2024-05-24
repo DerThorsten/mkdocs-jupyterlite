@@ -50,7 +50,7 @@ plugins:
   - jupyterlite-plugin:
       environments:
         my_env:
-          build: 9
+          build: 1
           env_file: lite_envs/with_numpy/env.yaml
           notebook_dir: notebooks
           notebook_pattern: "*.py"
@@ -61,7 +61,7 @@ plugins:
             - host: lite_envs/with_numpy/mounts/some_mount
               target: "/some/target/dir"
         themes_env:
-          build: 0
+          build: 1
           env_file: lite_envs/themes/env.yaml
           notebook_dir: notebooks
           notebook_pattern: "NOT*.py"

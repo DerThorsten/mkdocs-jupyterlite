@@ -78,6 +78,7 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
         self.total_time = 0
 
         self.cache_dir = Path(mkdocs_lite_dirs.user_cache_dir)
+        self._env_notebook_files = {}
 
     # def on_serve(self,server, config, builder):
     #     return server
@@ -118,23 +119,30 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
             page_lite_dir = Path(config.get('site_dir')) /  lite_env_name / "lite"
             shutil.copytree(lite_dir, page_lite_dir)
 
+            nbdir = self._env_notebook_markdown_dir(lite_env_name)
           
-            for item in  self._env_notebook_markdown_dir(lite_env_name).iterdir():
-                file_name = item.name
-                # file_name is <some name>.py.md
-                # extract original extension, in this case .py
-                print(f"file_name: {file_name}")
-                extenstion = file_name.split(".")[-2]
-                print(f"extension: {extenstion}")
+            for item in  self._env_notebook_files[lite_env_name]:
+                print("item", item)
 
+                # file_name is <some name>.py
+                file_name = item.name
                 
+                # extract original extension, in this case py
+                # (note that we need to remove the leading dot)
+                extenstion = item.suffix
+                extenstion = extenstion[1:]
+
                 kernel_name = lite_env_config.kernel_mapping[extenstion]
-                item_name = item.stem
-                # remove extension
-                item_name = item_name.split(".")[0]
+
+                # get <some name>
+                item_name = Path(file_name).stem
+
+                # markdown path
+                markdown_path = nbdir / f"{item_name}.{extenstion}.md"
+
 
                 # read the file
-                with open(item, 'r') as f:
+                with open(markdown_path, 'r') as f:
                     content = f.read()
                     # append new line to content
                     content = content + "\n"
@@ -149,12 +157,14 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
                     content = content + f"[run notebook]({go_up}{lite_env_name}/lite/lab/index.html?path={item_name}.ipynb&kernel={kernel_name})"
                 
                 # write the file
-                with open(item, 'w') as f:  
+                with open(markdown_path, 'w') as f:  
                     f.write(content)
+
+                print("markdown_path", markdown_path)
 
                 # create an entry for each markdown file
                 file = mkdocs.structure.files.File(
-                    path=self._docs_path(lite_env_name) / item.name,
+                    path=self._docs_path(lite_env_name) /  f"{item_name}.{extenstion}.md",
                     src_dir=self._env_notebook_markdown_dir_root(lite_env_name),
                     dest_dir=Path(config.get('site_dir')),  
                     use_directory_urls=False)
@@ -171,6 +181,7 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
 
         lite_envs = self.config.get("environments")
 
+        self._env_notebook_files = {}
 
         for lite_env_name, lite_env_config in lite_envs.items():
             env_cache_dir = self.cache_dir / lite_env_name
@@ -179,12 +190,13 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
             notebook_pattern = self.config['environments'][lite_env_name].get("notebook_pattern")
             kernel_mapping = self.config['environments'][lite_env_name].get("kernel_mapping")
 
-            convert_notebooks(notebook_dir=notebook_dir, notebook_pattern=notebook_pattern, 
+            notebooks = convert_notebooks(notebook_dir=notebook_dir, notebook_pattern=notebook_pattern, 
                               kernel_mapping=kernel_mapping,
                               outdir_markdown=self._env_notebook_markdown_dir(lite_env_name),
                               outdir_ipynb=self._env_notebook_ipynb_dir(lite_env_name))
 
-        
+            self._env_notebook_files[lite_env_name] = notebooks
+
         for lite_env_name, lite_env_config in lite_envs.items():
             env_cache_dir = self.cache_dir / lite_env_name
             build_jupyterlite(config=config, lite_env_name=lite_env_name, 
