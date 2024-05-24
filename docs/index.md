@@ -29,6 +29,8 @@ markdown_extensions:
         - name: repl
           class: iframe
           format: !!python/name:mkdocs_jupyterlite.superfences.repl_formater
+          validator: !!python/name:mkdocs_jupyterlite.superfences.repl_validator
+    
 plugins:
   - jupyterlite-plugin:
       environments:

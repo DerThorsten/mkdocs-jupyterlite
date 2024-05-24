@@ -1,16 +1,33 @@
 import urllib
 IFRAME_TEMPLATE = """
 
-<iframe src="{env}/lite/repl/index.html?kernel={kernel}&code={source}" width="100%" height="500px">
+<iframe id="__repl__" src="./{env}/lite/repl/index.html?kernel={kernel}&code={source}&theme={theme}&toolbar={toolbar}" width={width} height={height}>
 </iframe>
 
 """
 
-def repl_formater(source, language, css_class, options, md, classes=None, id_value='', attrs=None, **kwargs):
-    print(f"in repl_formater with source: {source} and options: {options}")
+def repl_validator(language, inputs, options, attrs, md):
+    print(f"in repl_validator with {language=}, {inputs=}, {options=}, {attrs=}, {md=}")
+    for k,v in inputs.items():
+        print(f"inputs: {k} = {v}")
+        options[k] = v
+    return True
 
-    env = options.get("env", "my_env")
-    kernel = options.get("kernel", "xpython")
+def repl_formater(source, language, css_class, options, md, classes=None, id_value='', attrs=None, **kwargs):
+    print(f"in repl_formater with source: {source}  {language=}, {css_class=}, {options=}, {md=}, {classes=}, {id_value=}, {attrs=}, {kwargs=}")
+
+    code_block=urllib.parse.quote_plus(source)
+    repl_args = dict(
+        env=options.get("env", "my_env"),
+        kernel=options.get("kernel", "xpython"),
+        width=options.get("width", "100%"),
+        height=options.get("height", "'500px'"),
+        theme=options.get("theme", "light"),
+        toolbar=options.get("toolbar", "1"),
+        source=code_block
+    )
+
     
-    code_block = urllib.parse.quote_plus(source)
-    return IFRAME_TEMPLATE.format(env=env, kernel=kernel, source=code_block)
+
+    iframe =  IFRAME_TEMPLATE.format(**repl_args)
+    return iframe
