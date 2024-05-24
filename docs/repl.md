@@ -26,8 +26,9 @@ The `repl` directive supports the following options:
 
 !!! note
 
-    The theme needs to
-    be in the environment specified in the `env` option. 
+    At the moment, it is recommended to
+    install the theme package in the **host** environment
+    and not in then `emscripten-wasm32` environment.
 
 
 ## Example

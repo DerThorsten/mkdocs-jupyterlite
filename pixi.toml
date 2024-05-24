@@ -28,6 +28,7 @@ lxml = "*"
 jupyterlite-xeus = ">=0.1.8"
 [feature.feature_documentation.pypi-dependencies]
 mkdocs_custom_fences = "*"
+JLDracula = "*"
 
 [feature.feature_documentation.tasks.install_mkdocs_jupyterlite]
 cmd = ["pip", "install", "-e", ".", "--no-deps"]
