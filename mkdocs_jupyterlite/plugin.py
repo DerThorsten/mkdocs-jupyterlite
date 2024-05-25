@@ -205,6 +205,8 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
 
     def on_post_build(self, config):
 
+        lite_envs = self.config.get("environments")
+
         for lite_env_name, lite_env_config in lite_envs.items():
             env_cache_dir = self.cache_dir / lite_env_name
             build_jupyterlite(config=config, lite_env_name=lite_env_name, 
