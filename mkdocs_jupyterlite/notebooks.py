@@ -3,6 +3,18 @@ from pathlib import Path
 import jupytext
 
 
+
+def convert_code_to_ipynb(source, kernel):
+    nb = jupytext.reads(source, as_version=4)
+    nb.metadata["kernelspec"] = {}
+    nb.metadata["kernelspec"]["name"] = kernel
+    ipynb = jupytext.writes(nb, fmt='ipynb')
+    return ipynb
+
+
+
+
+
 def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_markdown, outdir_ipynb):
     notebook_dir = Path(notebook_dir)
     if not notebook_dir.exists():
@@ -49,8 +61,8 @@ def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_mar
         with open(notebook, 'r') as f:
             nb = jupytext.read(f, as_version=4)
 
-            nb.metadata["kernel_info"] = {}
-            nb.metadata["kernel_info"]["name"] = kernel_name
+            nb.metadata["kernelspec"] = {}
+            nb.metadata["kernelspec"]["name"] = kernel_name
 
 
             ipynb = jupytext.writes(nb, fmt='ipynb')

@@ -38,6 +38,10 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences:
       custom_fences:
+        - name: notebook
+          class: iframe
+          format: !!python/name:mkdocs_jupyterlite.superfences.notebook_formater
+          validator: !!python/name:mkdocs_jupyterlite.superfences.notebook_validator  
         - name: repl
           class: iframe
           format: !!python/name:mkdocs_jupyterlite.superfences.repl_formater
@@ -50,7 +54,7 @@ plugins:
   - jupyterlite-plugin:
       environments:
         my_env:
-          build: 2
+          build: 4
           env_file: lite_envs/with_numpy/env.yaml
           notebook_dir: notebooks
           notebook_pattern: "*.py"
@@ -60,18 +64,8 @@ plugins:
           mounts:
             - host: lite_envs/with_numpy/mounts/some_mount
               target: "/some/target/dir"
-        themes_env:
-          build: 2
-          env_file: lite_envs/themes/env.yaml
-          notebook_dir: notebooks
-          notebook_pattern: "NOT*.py"
-          notebook_doc_path: "examples/notebooks"
-          kernel_mapping:
-            py: xpython
-          mounts:
-            - host: lite_envs/themes/mounts/some_mount
-              target: "/some/target/dir"
-          
+
+
 
 
 

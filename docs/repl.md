@@ -32,14 +32,14 @@ The `repl` directive supports the following options:
 
 
 ## Example
-````{.md option="Repl"}
-```{.repl kernel="xpython" env="themes_env" theme="JLDracula"}
+````{.md title="Repl Example:"}
+```{.repl kernel="xpython" env="my_env" theme="JLDracula"} 
 print('hello world')
 ```
 ````
 
 This will render the following:
 
-```{.repl kernel="xpython" env="themes_env" theme="JLDracula"}
+```{.repl kernel="xpython" env="my_env" theme="JLDracula"}
 print('hello dracular')
 ```

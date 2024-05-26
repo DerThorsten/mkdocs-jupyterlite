@@ -2,12 +2,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-import yaml
-import fnmatch
-import tempfile
-import json
 from mkdocs import utils as mkdocs_utils
-from mkdocs.config import config_options, Config
 from mkdocs.plugins import BasePlugin
 import mkdocs
 import urllib.parse
@@ -19,55 +14,18 @@ from appdirs import AppDirs
 mkdocs_lite_dirs = AppDirs("mkdocs-jupyterlite", "mkdocs-jupyterlite")
 
 import hashlib
-# import logging
-# log = logging.getLogger(f"mkdocs.plugins.{__name__}")
-# logging.basicConfig(level=logging.INFO)
+import tempfile
 
-import pprint
-import jupytext
+import logging
+log = logging.getLogger(f"mkdocs.plugins.{__name__}")
+logging.basicConfig(level=logging.INFO)
 
+
+from .plugin_config import JupyterlitePluginConfig
 from .notebooks import convert_notebooks
 
-IFRAME_TEMPLATE = """
-<iframe src="{env}/lite/repl/index.html?kernel={kernel_name}&code={code}" width="100%" height="500px">
-</iframe>
-"""
+from .content_collector import content_collector
 
-
-
-
-class MountConfig(Config):
-    host = config_options.Dir(exists=True)  # required
-    target = config_options.Type(str)
-
-class LiteConfig(Config):
-    env_file  = config_options.File(exists=True)  # required
-    mounts = config_options.ListOfItems(config_options.SubConfig(MountConfig), default=[])
-    build = config_options.Type(int, default=0)
-    notebook_dir = config_options.Dir(default=None)
-    notebook_pattern = config_options.Type(str, default="*")
-    notebook_doc_path = config_options.Type(str, default="examples")
-    kernel_mapping = config_options.DictOfItems(config_options.Type(str), default={'py': 'xpython'})
-
-    def hash(self, name):
-        # load content of env_file as yaml
-        with open(self.env_file, 'r') as stream:
-            env_content = yaml.safe_load(stream)
-            
-        # dump content as string
-        env_content_str = yaml.dump(env_content)
-
-        # mounts as comma separated string
-        mounts_str = ",".join([f"{mount.host}:{mount.target}" for mount in self.mounts])
-        
-        full_str = f"{name}{env_content_str}{mounts_str}{self.build}"
-
-        return hashlib.sha256(full_str.encode()).hexdigest()
-
-
-
-class JupyterlitePluginConfig(Config):
-    environments =  config_options.DictOfItems(config_options.SubConfig(LiteConfig))  # required
 
 
 class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
@@ -77,14 +35,10 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
         self.enabled = True
         self.total_time = 0
 
+        self._temp_dir = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
+
         self.cache_dir = Path(mkdocs_lite_dirs.user_cache_dir)
         self._env_notebook_files = {}
-
-    # def on_serve(self,server, config, builder):
-    #     return server
-
-    # def on_pre_build(self, config):
-    #     return
 
     def _env_cache_dir(self, lite_env_name):
         return self.cache_dir / lite_env_name
@@ -157,14 +111,15 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
 
                 print("markdown_path", markdown_path)
 
-                # create an entry for each markdown file
-                file = mkdocs.structure.files.File(
-                    path=self._docs_path(lite_env_name) /  f"{item_name}.{extenstion}.md",
-                    src_dir=self._env_notebook_markdown_dir_root(lite_env_name),
-                    dest_dir=Path(config.get('site_dir')),  
-                    use_directory_urls=False)
+                if False:
+                    # create an entry for each markdown file
+                    file = mkdocs.structure.files.File(
+                        path=self._docs_path(lite_env_name) /  f"{item_name}.{extenstion}.md",
+                        src_dir=self._env_notebook_markdown_dir_root(lite_env_name),
+                        dest_dir=Path(config.get('site_dir')),  
+                        use_directory_urls=False)
 
-                files.append(file)
+                    files.append(file)
 
 
 
@@ -192,12 +147,6 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
 
             self._env_notebook_files[lite_env_name] = notebooks
 
-        for lite_env_name, lite_env_config in lite_envs.items():
-            env_cache_dir = self.cache_dir / lite_env_name
-            build_jupyterlite(config=config, lite_env_name=lite_env_name, 
-                              lite_env_config=lite_env_config,
-                              out_dir=env_cache_dir / "lite",
-                              content_dir=self._env_notebook_ipynb_dir(lite_env_name))
         
 
         return config
@@ -209,11 +158,23 @@ class JupyterlitePlugin(BasePlugin[JupyterlitePluginConfig]):
 
         for lite_env_name, lite_env_config in lite_envs.items():
             env_cache_dir = self.cache_dir / lite_env_name
+
+            
+            # copy collected content to the lite deployment
+            content_list = content_collector().per_env_content[lite_env_name]
+            for content in content_list:
+                path = Path(content["path"])
+                source = content["content"]
+                root_content_path = self._env_notebook_ipynb_dir(lite_env_name)
+                content_path = root_content_path / path
+                content_path.parent.mkdir(parents=True, exist_ok=True)
+                print(f"writing path: {content_path}")
+                content_path.write_text(source)
+
             build_jupyterlite(config=config, lite_env_name=lite_env_name, 
                               lite_env_config=lite_env_config,
                               out_dir=env_cache_dir / "lite",
                               content_dir=self._env_notebook_ipynb_dir(lite_env_name))
-
             
             # copy jupterlite deployment to site_dir
             lite_dir = self._env_lite_cache_dir(lite_env_name)

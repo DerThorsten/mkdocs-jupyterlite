@@ -24,6 +24,7 @@ micromamba = ">=1.5.8"
 jupytext = "*"
 jupyter_server = "*"
 lxml = "*"
+
 #mamba = ">=1.5.8"
 jupyterlite-xeus = ">=0.1.8"
 [feature.feature_documentation.pypi-dependencies]
