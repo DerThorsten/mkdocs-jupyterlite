@@ -1,5 +1,8 @@
+from __future__ import annotations
+
+from collections import defaultdict
+
 from .singleton import Singleton
-from collections import defaultdict 
 
 
 @Singleton
@@ -8,9 +11,9 @@ class ContentCollector:
         self.per_env_content = defaultdict(list)
 
     def add(self, env, path, content):
-     
-        self.per_env_content[env].append({ "path": path, "content": content})
-    
+
+        self.per_env_content[env].append({'path': path, 'content': content})
+
 
 def content_collector():
     return ContentCollector.instance()

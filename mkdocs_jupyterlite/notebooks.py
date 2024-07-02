@@ -1,25 +1,23 @@
+from __future__ import annotations
+
 import fnmatch
 from pathlib import Path
-import jupytext
 
+import jupytext
 
 
 def convert_code_to_ipynb(source, kernel):
     nb = jupytext.reads(source, as_version=4)
-    nb.metadata["kernelspec"] = {}
-    nb.metadata["kernelspec"]["name"] = kernel
+    nb.metadata['kernelspec'] = {}
+    nb.metadata['kernelspec']['name'] = kernel
     ipynb = jupytext.writes(nb, fmt='ipynb')
     return ipynb
-
-
-
 
 
 def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_markdown, outdir_ipynb):
     notebook_dir = Path(notebook_dir)
     if not notebook_dir.exists():
         raise ValueError(f"{notebook_dir} does not exist")
-    
 
     outdir_markdown.mkdir(parents=True, exist_ok=True)
     outdir_ipynb.mkdir(parents=True, exist_ok=True)
@@ -33,39 +31,37 @@ def convert_notebooks(notebook_dir, notebook_pattern, kernel_mapping, outdir_mar
             notebooks.append(item)
         else:
             print(f"skipping {item}")
-    
 
     # convert notebooks to markdown
     for notebook in notebooks:
         extension = notebook.suffix
-        #remove leading dot
+        # remove leading dot
         extension = extension[1:]
 
-        print("get kernel name for extension", extension)
+        print('get kernel name for extension', extension)
         kernel_name = kernel_mapping[extension]
-        print("kernel_name", kernel_name)
+        print('kernel_name', kernel_name)
         print(f"converting {notebook} to markdown")
-        with open(notebook, 'r') as f:
+        with open(notebook) as f:
             nb = jupytext.read(f, as_version=4)
             markdown = jupytext.writes(nb, fmt='md')
             out_path = outdir_markdown / notebook.with_suffix(f".md").name
             out_path.write_text(markdown)
 
-            # rename file to have correct extension 
+            # rename file to have correct extension
             new_name = out_path.with_suffix(f".{extension}.md")
             out_path.rename(new_name)
-    
+
     # convert notebooks to ipynb
     for notebook in notebooks:
         print(f"converting {notebook} to ipynb")
-        with open(notebook, 'r') as f:
+        with open(notebook) as f:
             nb = jupytext.read(f, as_version=4)
 
-            nb.metadata["kernelspec"] = {}
-            nb.metadata["kernelspec"]["name"] = kernel_name
-
+            nb.metadata['kernelspec'] = {}
+            nb.metadata['kernelspec']['name'] = kernel_name
 
             ipynb = jupytext.writes(nb, fmt='ipynb')
-            out_path = outdir_ipynb / notebook.with_suffix(".ipynb").name
+            out_path = outdir_ipynb / notebook.with_suffix('.ipynb').name
             out_path.write_text(ipynb)
     return notebooks

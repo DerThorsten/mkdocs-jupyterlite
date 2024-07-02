@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class Singleton:
     """
     A non-thread-safe helper class to ease implementing singletons.

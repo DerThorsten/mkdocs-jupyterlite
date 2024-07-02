@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import urllib
 
 from .content_collector import content_collector
@@ -17,59 +19,51 @@ NOTEBOOK_IFRAME_TEMPLATE = """
 """
 
 
-
-
 def _pass_trough_validator(language, inputs, options, attrs, md):
-    for k,v in inputs.items():
+    for k, v in inputs.items():
         options[k] = v
     return True
 
 
-
-
 def notebook_validator(language, inputs, options, attrs, md):
-    print(f"in notebook_validator with {language=}, {inputs=}, {options=}, {attrs=}, {md=}")
+    print(
+        f"in notebook_validator with {language=}, {inputs=}, {options=}, {attrs=}, {md=}")
     return _pass_trough_validator(language, inputs, options, attrs, md)
-
-
-
 
 
 def notebook_formater(source, language, css_class, options, md, classes=None, id_value='', attrs=None, **kwargs):
 
-    try:    
+    try:
 
         # convert the annotated code to a notebook
-        env=options["env"]
-        kernel=options["kernel"]
-        name=options["name"]
+        env = options['env']
+        kernel = options['kernel']
+        name = options['name']
 
         ipynb = convert_code_to_ipynb(source, kernel=kernel)
-
 
         # call collector
         collector = content_collector()
         collector.add(
             env=env,
             path=f"{name}.ipynb",
-            content=ipynb
+            content=ipynb,
         )
-
 
         print(options)
 
-        name = options["name"]
+        name = options['name']
 
         notebook_args = dict(
-            env=options.get("env", "JupyterLab Light"),
+            env=options.get('env', 'JupyterLab Light'),
             kernel=kernel,
-            width=options.get("width", "100%"),
-            height=options.get("height", "500pxs"),
-            theme=options.get("theme", "light"),
-            toolbar=options.get("toolbar", "1"),
-            path=options.get("path", f"{name}.ipynb"),
+            width=options.get('width', '100%'),
+            height=options.get('height', '500pxs'),
+            theme=options.get('theme', 'light'),
+            toolbar=options.get('toolbar', '1'),
+            path=options.get('path', f"{name}.ipynb"),
         )
-        for k,v in notebook_args.items():
+        for k, v in notebook_args.items():
             notebook_args[k] = urllib.parse.quote_plus(v)
 
         return NOTEBOOK_IFRAME_TEMPLATE.format(**notebook_args)
@@ -81,27 +75,23 @@ def notebook_formater(source, language, css_class, options, md, classes=None, id
         sys.exit(1)
 
 
-
-
 def repl_validator(language, inputs, options, attrs, md):
 
     return _pass_trough_validator(language, inputs, options, attrs, md)
 
 
-
 def repl_formater(source, language, css_class, options, md, classes=None, id_value='', attrs=None, **kwargs):
     repl_args = dict(
         source=source,
-        env=options.get("env", "JupyterLab Light"),
-        kernel=options.get("kernel", "xeus-python"),
-        width=options.get("width", "100%"),
-        height=options.get("height", "500pxs"),
-        theme=options.get("theme", "light"),
-        toolbar=options.get("toolbar", "1"),
+        env=options.get('env', 'JupyterLab Light'),
+        kernel=options.get('kernel', 'xeus-python'),
+        width=options.get('width', '100%'),
+        height=options.get('height', '500pxs'),
+        theme=options.get('theme', 'light'),
+        toolbar=options.get('toolbar', '1'),
     )
-    for k,v in repl_args.items():
+    for k, v in repl_args.items():
         repl_args[k] = urllib.parse.quote_plus(v)
 
-
-    iframe =  REPL_IFRAME_TEMPLATE.format(**repl_args)
+    iframe = REPL_IFRAME_TEMPLATE.format(**repl_args)
     return iframe
