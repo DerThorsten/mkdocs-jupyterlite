@@ -13,7 +13,7 @@ theme:
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: default 
+      scheme: default
       primary: deep orange
       toggle:
         icon: material/brightness-7
@@ -26,7 +26,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-      
+
 
 markdown_extensions:
   - admonition
@@ -41,12 +41,12 @@ markdown_extensions:
         - name: notebook
           class: iframe
           format: !!python/name:mkdocs_jupyterlite.superfences.notebook_formater
-          validator: !!python/name:mkdocs_jupyterlite.superfences.notebook_validator  
+          validator: !!python/name:mkdocs_jupyterlite.superfences.notebook_validator
         - name: repl
           class: iframe
           format: !!python/name:mkdocs_jupyterlite.superfences.repl_formater
           validator: !!python/name:mkdocs_jupyterlite.superfences.repl_validator
-    
+
 
 
 plugins:
@@ -64,12 +64,3 @@ plugins:
           mounts:
             - host: lite_envs/with_numpy/mounts/some_mount
               target: "/some/target/dir"
-
-
-
-
-
-
-
-
-

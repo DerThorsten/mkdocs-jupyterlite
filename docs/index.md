@@ -30,7 +30,7 @@ markdown_extensions:
           class: iframe
           format: !!python/name:mkdocs_jupyterlite.superfences.repl_formater
           validator: !!python/name:mkdocs_jupyterlite.superfences.repl_validator
-    
+
 plugins:
   - jupyterlite-plugin:
       environments:
@@ -63,5 +63,3 @@ This will render the following:
 ```{.repl kernel="xpython" env="my_env"}
 print('hello world')
 ```
-
-

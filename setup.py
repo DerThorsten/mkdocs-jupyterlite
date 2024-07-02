@@ -1,5 +1,7 @@
+from __future__ import annotations
 
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 
 setup(
@@ -18,10 +20,10 @@ setup(
         'jupyterlite>=0.3.0',
         'jupyterlite-core>=0.3.0',
         'jupyter_server',
-        "appdirs",
-        "jupytext",
+        'appdirs',
+        'jupytext',
         'jupyterlite-xeus>=0.1.8',
-        # micromamba is atm requried.... 
+        # micromamba is atm requried....
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -33,12 +35,12 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7'
+        'Programming Language :: Python :: 3.7',
     ],
     packages=find_packages(),
     entry_points={
         'mkdocs.plugins': [
-            'jupyterlite-plugin = mkdocs_jupyterlite.plugin:JupyterlitePlugin'
-        ]
-    }
+            'jupyterlite-plugin = mkdocs_jupyterlite.plugin:JupyterlitePlugin',
+        ],
+    },
 )
